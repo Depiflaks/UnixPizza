@@ -1,0 +1,16 @@
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Count</th>
+            <th>Cost</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in data %}
+            {% include 'contents/pizza_cart_line.html.twig' with row %}
+        {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,85 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    background-color: #300a24;
+    font-family: 'Ubuntu Mono', monospace;
+}
+
+.terminal {
+    width: 100%;
+    overflow: hidden;
+    color: #f8f8f2;
+    font-size: 16px;
+}
+
+.terminal-header {
+    background-color: #421532;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #f8f8f2;
+}
+
+.terminal-title {
+    flex-grow: 1;
+    text-align: center;
+    color: #f8f8f2;
+    font-weight: bold;
+}
+
+.terminal-body {
+    padding: 20px;
+    overflow: auto;
+}
+
+.terminal-body p {
+    margin: 0;
+}
+
+.terminal-line input {
+    background: none;
+    border: none;
+    color: #f8f8f2;
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
+    flex-grow: 1;
+}
+
+.user {
+    color: #4CAF50;
+}
+
+.path {
+    color: #FFA500;
+}
+
+.view {
+    color: #4169E1;
+}
+
+::-webkit-scrollbar {
+    width: 12px; 
+    height: 12px; 
+}
+
+::-webkit-scrollbar-track {
+    background: #300a24;
+    border-radius: 10px; 
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cccccc;
+    border-radius: 10px; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #b3b3b3;
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: #999999;
+}

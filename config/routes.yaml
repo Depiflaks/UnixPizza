@@ -1,3 +1,55 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+index:
+    path: /
+    methods: GET
+    controller: App\Controller\CommandController::index
+
+tip:
+    path: /add/tip
+    controller: App\Controller\CommandController::addTip
+    methods: POST
+
+add:
+    path: /add/cmdline
+    controller: App\Controller\CommandController::addLine
+    methods: POST
+
+text:
+    path: /add/text
+    controller: App\Controller\CommandController::addText
+    methods: POST
+
+ls:
+    path: /add/ls
+    controller: App\Controller\CommandController::pizzaList
+    methods: POST
+
+help:
+    path: /add/help
+    controller: App\Controller\CommandController::addHelp
+    methods: POST
+
+# add_user:
+#     path: /user/add_user
+#     methods: POST
+#     controller: App\Controller\UserController::saveUserToDatabase
+    
+# show_user:
+#     path: /user/show/{id}
+#     controller: App\Controller\UserController::showUser
+#     methods: GET
+
+
+# update_user:
+#     path: /user/update
+#     controller: App\Controller\UserController::updateUserData
+#     methods: POST
+
+# delete_user:
+#     path: /user/delete
+#     controller: App\Controller\UserController::deleteUserFromDatabase
+#     methods: POST
+
+# home:
+#     path: /user/list
+#     controller: App\Controller\UserController::showUsersList
+#     methods: GET
