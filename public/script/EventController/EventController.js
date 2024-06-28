@@ -1,12 +1,14 @@
+import { verify } from "crypto";
 import { CommandParser } from "../CommandParser/CommandParser.js";
 import { Connection } from "../Connection/Connection.js";
 import { StateController } from "../StateController/StateController.js";
 
 class EventController {
     constructor(document) {
+        this.document = document;
         this.parser = new CommandParser()
         this.connection = new Connection();
-        this.document = document;
+        console.log(123);
         this.state = new StateController();
         document.addEventListener("click", () => {
             const lastInput = document.getElementById("last");
@@ -32,10 +34,9 @@ class EventController {
         this.saveToStorage({last, input, value});
         // парсинг и вверификация команды
         console.log(this.parser.parse(value));
-
-        this.checkCommand(this.parser.parse(value))
+        if (!this.state.current()) this.checkCommand(this.parser.parse(value))
         
-        this.checkStatement();
+        this.checkStatement(value);
     }
 
     checkCommand(cmd) {
@@ -43,18 +44,27 @@ class EventController {
             this.connection.error("there is an error in the syntax of the command, be more careful");
             return;
         }
+        if (this.parser.isInfo(cmd.command) && (this.parser.isAdmin(cmd.command) && this.connection.isAdmin || !this.parser.isAdmin(cmd.command))) {
+            this.connection.addElement('/add/' + cmd.command);
+            return;
+        }
         switch (cmd.command) {
-            case "ls":
-                this.connection.addElement('/add/ls');
+            case "add":
+                const [name, count] = cmd.args;
+                if (!this.connection.verifyPizzaName(name)) {
+                    this.connection.error("there is no pizza with this name in the catalog");
+                    return;
+                }
+                if (count > 12) {
+                    this.connection.error("the lethal dose of pizzas for a person: 12,5; For the safety of our users' lives, we cannot allow you to order more than 12 pizzas at a time");
+                    return;
+                }
+                this.connection.printText("pizza " + name + " in the amount of " + count + " pieces has been successfully added to your cart");
                 break;
-            case "help":
-                this.connection.addElement('/add/help');
-                break;
-
         }
     }
 
-    checkStatement() {
+    checkStatement(value) {
         switch (this.state.current()) {
             case null:
                 this.connection.addElement('/add/cmdline');

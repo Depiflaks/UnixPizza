@@ -1,6 +1,7 @@
 class Connection {
     constructor() {
-
+        this.addElement('/add/tip');
+        this.addElement('/add/cmdline');
     }
 
     addElement(path, param=[]) {
@@ -41,6 +42,10 @@ class Connection {
     }
 
     isAdmin() {
+        return true;
+    }
+
+    verifyPizzaName(name) {
         return true;
     }
 }

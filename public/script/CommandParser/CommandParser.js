@@ -14,6 +14,8 @@ class CommandParser {
             "new": /^new$/,
             "del": /^del\s+([A-Za-z\s]+)$/,
         };
+        this.adminCmd = ["new", "del"];
+        this.infoCmd = ["cart", "ls", "help", "logout"];
     }
 
     parse(line) {
@@ -28,6 +30,14 @@ class CommandParser {
             }
         }
         return null;
+    }
+
+    isAdmin(cmd) {
+        return (cmd in this.adminCmd);
+    }
+
+    isInfo(cmd) {
+        return (cmd in this.infoCmd);
     }
 }
 
