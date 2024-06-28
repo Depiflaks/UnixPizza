@@ -41,6 +41,14 @@ class CommandController extends AbstractController
         return $contents;
     }
 
+    public function addError(): Response
+    {
+        $body = json_decode(file_get_contents("php://input"), true);
+        $text = $body["text"];
+        $contents = $this->render('error/error.html.twig', ["text" => $text]);
+        return $contents;
+    }
+
     public function pizzaList(): Response 
     {
         $pizza = [

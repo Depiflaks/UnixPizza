@@ -28,6 +28,11 @@ help:
     controller: App\Controller\CommandController::addHelp
     methods: POST
 
+error:
+    path: /add/error
+    controller: App\Controller\CommandController::addError
+    methods: POST
+
 # add_user:
 #     path: /user/add_user
 #     methods: POST
