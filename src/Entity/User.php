@@ -2,79 +2,51 @@
 
 namespace App\Entity;
 
-class User
-{    
-    public function __construct(
-        private ?int $user_id, 
-        private string $first_name, 
-        private string $last_name, 
-        private ?string $middle_name, 
-        private string $gender, 
-        private ?string $birth_date, 
-        private string $email, 
-        private ?string $phone, 
-        private ?string $avatar_path) 
-    {
-    }
+use Doctrine\ORM\Mapping as ORM;
 
-    public function getId(): ?int
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="users")
+ */
+class User
+{
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private ?int $user_id = null;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private string $user_name;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private string $email;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private string $password;
+
+    // Getters and setters
+
+    public function getUserId(): ?int
     {
         return $this->user_id;
     }
 
-    public function getFirstName(): string
+    public function getUserName(): string
     {
-        return $this->first_name;
+        return $this->user_name;
     }
 
-    public function setFirstName(string $first_name): self
+    public function setUserName(string $user_name): void
     {
-        $this->first_name = $first_name;
-        return $this;
-    }
-
-    public function getLastName(): string
-    {
-        return $this->last_name;
-    }
-
-    public function setLastName(string $last_name): self
-    {
-        $this->last_name = $last_name;
-        return $this;
-    }
-
-    public function getMiddleName(): ?string
-    {
-        return $this->middle_name;
-    }
-
-    public function setMiddleName(?string $middle_name): self
-    {
-        $this->middle_name = $middle_name;
-        return $this;
-    }
-
-    public function getGender(): string
-    {
-        return $this->gender;
-    }
-
-    public function setGender(string $gender): self
-    {
-        $this->gender = $gender;
-        return $this;
-    }
-
-    public function getBirthDate(): ?string
-    {
-        return $this->birth_date;
-    }
-
-    public function setBirthDate(?string $birth_date): self
-    {
-        $this->birth_date = $birth_date;
-        return $this;
+        $this->user_name = $user_name;
     }
 
     public function getEmail(): string
@@ -82,31 +54,18 @@ class User
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(string $email): void
     {
         $this->email = $email;
-        return $this;
     }
 
-    public function getPhone(): ?string
+    public function getPassword(): string
     {
-        return $this->phone;
+        return $this->password;
     }
 
-    public function setPhone(?string $phone): self
+    public function setPassword(string $password): void
     {
-        $this->phone = $phone;
-        return $this;
-    }
-
-    public function getAvatarPath(): ?string
-    {
-        return $this->avatar_path;
-    }
-
-    public function setAvatarPath(?string $avatar_path): self
-    {
-        $this->avatar_path = $avatar_path;
-        return $this;
+        $this->password = $password;
     }
 }

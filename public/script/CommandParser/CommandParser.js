@@ -25,7 +25,7 @@ class CommandParser {
             if (match) {
                 return {
                     command: cmd,
-                    args: match.slice(1)  // Возвращаем аргументы команды
+                    args: match.slice(1)
                 };
             }
         }
@@ -33,11 +33,11 @@ class CommandParser {
     }
 
     isAdmin(cmd) {
-        return (cmd in this.adminCmd);
+        return (this.adminCmd.includes(cmd));
     }
 
     isInfo(cmd) {
-        return (cmd in this.infoCmd);
+        return (this.infoCmd.includes(cmd));
     }
 }
 

@@ -23,15 +23,32 @@ ls:
     controller: App\Controller\CommandController::pizzaList
     methods: POST
 
+cart:
+    path: /add/cart
+    controller: App\Controller\CommandController::userCart
+    methods: POST
+
 help:
     path: /add/help
     controller: App\Controller\CommandController::addHelp
+    methods: POST
+
+add_complete:
+    path: /add/add_complete
+    controller: App\Controller\CommandController::addPizzaComplete
+    methods: POST
+
+input_line:
+    path: /add/input_line
+    controller: App\Controller\CommandController::addInputLine
     methods: POST
 
 error:
     path: /add/error
     controller: App\Controller\CommandController::addError
     methods: POST
+
+
 
 # add_user:
 #     path: /user/add_user

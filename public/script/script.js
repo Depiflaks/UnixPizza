@@ -1,7 +1,7 @@
 import { EventController } from "./EventController/EventController.js";
 
-console.log(123);
 
+const eventController = new EventController(document);
 
 
 

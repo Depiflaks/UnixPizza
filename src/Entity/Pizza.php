@@ -1,112 +1,72 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass="App\Repository\PizzaRepository")
+ */
 class Pizza
-{    
-    public function __construct(
-        private ?int $user_id, 
-        private string $first_name, 
-        private string $last_name, 
-        private ?string $middle_name, 
-        private string $gender, 
-        private ?string $birth_date, 
-        private string $email, 
-        private ?string $phone, 
-        private ?string $avatar_path) 
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
+     */
+    private ?int $pizza_id = null;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private string $pizza_name;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private string $ingredient;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private int $cost;
+
+    // Getters and Setters
+
+    public function getPizzaId(): ?int
     {
+        return $this->pizza_id;
     }
 
-    public function getId(): ?int
+    public function getPizzaName(): string
     {
-        return $this->user_id;
+        return $this->pizza_name;
     }
 
-    public function getFirstName(): string
+    public function setPizzaName(string $pizza_name): void
     {
-        return $this->first_name;
+        $this->pizza_name = $pizza_name;
     }
 
-    public function setFirstName(string $first_name): self
+    public function getIngredient(): string
     {
-        $this->first_name = $first_name;
-        return $this;
+        return $this->ingredient;
     }
 
-    public function getLastName(): string
+    public function setIngredient(string $ingredient): void
     {
-        return $this->last_name;
+        $this->ingredient = $ingredient;
     }
 
-    public function setLastName(string $last_name): self
+    public function getCost(): int
     {
-        $this->last_name = $last_name;
-        return $this;
+        return $this->cost;
     }
 
-    public function getMiddleName(): ?string
+    public function setCost(int $cost): void
     {
-        return $this->middle_name;
-    }
-
-    public function setMiddleName(?string $middle_name): self
-    {
-        $this->middle_name = $middle_name;
-        return $this;
-    }
-
-    public function getGender(): string
-    {
-        return $this->gender;
-    }
-
-    public function setGender(string $gender): self
-    {
-        $this->gender = $gender;
-        return $this;
-    }
-
-    public function getBirthDate(): ?string
-    {
-        return $this->birth_date;
-    }
-
-    public function setBirthDate(?string $birth_date): self
-    {
-        $this->birth_date = $birth_date;
-        return $this;
-    }
-
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-        return $this;
-    }
-
-    public function getPhone(): ?string
-    {
-        return $this->phone;
-    }
-
-    public function setPhone(?string $phone): self
-    {
-        $this->phone = $phone;
-        return $this;
-    }
-
-    public function getAvatarPath(): ?string
-    {
-        return $this->avatar_path;
-    }
-
-    public function setAvatarPath(?string $avatar_path): self
-    {
-        $this->avatar_path = $avatar_path;
-        return $this;
+        $this->cost = $cost;
     }
 }

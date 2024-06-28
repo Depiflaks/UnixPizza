@@ -8,6 +8,10 @@ class StateController {
             },
             "loginPassword": {
                 name: "loginPassword",
+                next: "loginEnd",
+            },
+            "loginEnd": {
+                name: "loginEnd",
                 next: null,
             },
             "registerName": {
@@ -16,6 +20,10 @@ class StateController {
             },
             "registerPassword": {
                 name: "registerPassword",
+                next: "registerEnd",
+            },
+            "registerEnd": {
+                name: "registerEnd",
                 next: null,
             },
             "pizzaName": {
@@ -28,6 +36,10 @@ class StateController {
             },
             "pizzaCost": {
                 name: "pizzaCost",
+                next: "pizzaEnd",
+            },
+            "pizzaEnd": {
+                name: "pizzaEnd",
                 next: null,
             },
             "buyAdress": {
@@ -36,6 +48,10 @@ class StateController {
             },
             "buyPhone": {
                 name: "buyPhone",
+                next: "buyEnd",
+            },
+            "buyEnd": {
+                name: "buyEnd",
                 next: null,
             },
         }

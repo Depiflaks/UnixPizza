@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Entity\Pizza" table="pizzas">
+        <id name="pizza_id" type="integer" column="pizza_id">
+            <generator strategy="AUTO"/>
+        </id>
+        <field name="pizza_name" type="string" column="pizza_name" length="255"/>
+        <field name="ingredient" type="string" column="ingredient" length="255"/>
+        <field name="cost" type="integer" column="cost"/>
+    </entity>
+
+</doctrine-mapping>

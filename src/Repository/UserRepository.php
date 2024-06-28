@@ -27,7 +27,7 @@ class UserRepository
     {
         $this->entityManager->persist($user);
         $this->entityManager->flush();
-        return $user->getId();
+        return $user->getUserId();
     }
 
     public function delete(User $user): void

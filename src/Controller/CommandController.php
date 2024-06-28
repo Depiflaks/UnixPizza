@@ -41,11 +41,31 @@ class CommandController extends AbstractController
         return $contents;
     }
 
+    public function addPizzaComplete(): Response 
+    {
+        $body = json_decode(file_get_contents("php://input"), true);
+        $contents = $this->render('contents/pizza_add.html.twig', ["name" => $body["name"], "count" => $body["count"]]);
+        return $contents;
+    }
+
+    public function addInputLine(): Response 
+    {
+        $body = json_decode(file_get_contents("php://input"), true);
+        $contents = $this->render('contents/input_line.html.twig', ["text" => $body["text"], "password" => $body["pass"]]);
+        return $contents;
+    }
+
     public function addError(): Response
     {
         $body = json_decode(file_get_contents("php://input"), true);
         $text = $body["text"];
         $contents = $this->render('error/error.html.twig', ["text" => $text]);
+        return $contents;
+    }
+
+    public function userCart() : Response {
+        $body = json_decode(file_get_contents("php://input"), true);
+        $contents = $this->render('pizza/pizza_cart.html.twig', ["data" => $body["data"]]);
         return $contents;
     }
 
