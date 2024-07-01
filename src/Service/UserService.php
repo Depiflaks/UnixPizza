@@ -21,20 +21,20 @@ class UserService
         $user = new User();
         $user->setUserName($userName);
         $user->setEmail($email);
-        $user->setPassword(md5($password)); // Хэширование пароля
+        $user->setPassword(md5($password));
 
         $this->userRepository->store($user);
 
         return $user;
     }
 
-    public function getUser(int $userId): ?User
+    public function getUser(string $userName): ?User
     {
-        $user = $this->userRepository->findByColumn('user_id', (string)$userId);
+        $user = $this->userRepository->findByColumn('user_name', $userName);
         if ($user) {
             return $user;
         }
-        return false;
+        return null;
     }
 
     public function deleteUser(int $userId): void

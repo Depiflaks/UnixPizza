@@ -54,6 +54,24 @@ class ConnectionView {
         this.addElement("/add/input_line", json_data);
     }
 
+    addCart(cart, pizzas) {
+        let data = {data: []};
+        for (let point in cart) {
+            for (let pizza of pizzas) {
+                if (pizza.pizza_name === point) {
+                    data.data.push({
+                        pizza_id: pizza.pizza_id,
+                        pizza_name: pizza.pizza_name,
+                        cost: pizza.cost,
+                        count: cart[point]
+                    });
+                }
+            }
+        }
+        const json_data = JSON.stringify(data);
+        this.addElement('/add/cart', json_data);
+    }
+
     error(text) {
         const data = {
             text: text,

@@ -7,6 +7,7 @@ class InputData {
         this.data = {
             username: "",
             password: "",
+            email: "",
             pizzaName: "",
             pizzaIngridients: "",
             pizzaCost: 0,

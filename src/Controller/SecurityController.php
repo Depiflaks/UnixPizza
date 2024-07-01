@@ -18,10 +18,17 @@ class SecurityController extends AbstractController
         $this->securityService = $securityService;
     }
 
-    public function login(Request $request): Response
+    public function getId(): Response
     {
-        $username = $request->request->get('username');
-        $password = $request->request->get('password');
+        return $this->json(["id" => $this->securityService->getId()], Response::HTTP_OK);
+    }
+
+    public function login(): Response
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        $username = $data["user_name"];
+        $password = $data["password"];
 
         return $this->json(["login" => $this->securityService->checkCredentials($username, $password)], Response::HTTP_OK);
     }
@@ -29,7 +36,7 @@ class SecurityController extends AbstractController
     public function logout(): Response
     {
         $this->securityService->logout();
-        return $this->redirectToRoute('homepage');
+        return $this->json(["logout" => true], Response::HTTP_OK);
     }
 
     public function isLogin(): Response

@@ -13,7 +13,6 @@
         <li><span class="path">ls</span> - display a list with information about all pizzas</li>
         <li><span class="path">add [pizza_name] [count]</span> - add <span class="path">[count]</span> pizzas <span class="path">[pizza_name]</span> to the cart</li>
         <li><span class="path">rm [pizza_name]</span> - remove pizza from the cart</li>
-        <li><span class="path">show [pizza_name]</span> - display a photo of a pizza on the screen</li>
         <li><span class="path">cart</span> - display a list of all pizzas in the cart</li>
         <li><span class="path">buy</span> - place an order</li>
     </ul>
@@ -21,7 +20,8 @@
         <p><span class="view">Admin commands:</span></p>
         <ul>
             <li><span class="path">new</span> - add a new pizza to the catalog</li>
-            <li><span class="path">del [pizza_name]</span> - permanently remove pizza from the catalog</li>
+            <li><span class="path">del [-p]/[-u] [id]</span> - permanently remove pizza or user from the database</li>
+            <li><span class="path">uls</span> - display a list with information about all users</li>
         </ul>
     {% endif %}
 </div>

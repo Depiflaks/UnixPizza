@@ -18,12 +18,9 @@ class SecurityService
         $this->session = $session;
     }
 
-    public function checkCredentials(): bool
+    public function checkCredentials(string $username, string $password): bool
     {
-        $data = json_decode(file_get_contents("php://input"), true);
-        $username = $data["user_name"];
-        $password = $data["password"];
-        
+
         $user = $this->userRepository->findByColumn('user_name', $username);
         
         if ($user && $user->getPassword() === md5($password)) {
@@ -39,7 +36,7 @@ class SecurityService
         $userId = $this->session->get('user_id');
 
         if ($userId) {
-            $user = $this->userRepository->findByColumn("id", $userId);
+            $user = $this->userRepository->findByColumn("user_id", (string)$userId);
             return $user && $user->isAdmin();
         }
 
@@ -51,12 +48,17 @@ class SecurityService
         return $this->session->has('user_id');
     }
 
+    public function getId(): ?int
+    {
+        return $this->session->get('user_id');
+    }
+
     public function getUser(): ?User
     {
         $userId = $this->session->get('user_id');
 
         if ($userId) {
-            return $this->userRepository->findByColumn("id", $userId);
+            return $this->userRepository->findByColumn("user_id", (string)$userId);
         }
 
         return null;

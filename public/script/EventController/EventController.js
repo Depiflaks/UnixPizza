@@ -33,13 +33,13 @@ class EventController {
             input: this.document.getElementById("last").querySelector("input"),
             value: this.document.getElementById("last").querySelector("input").value,
         }
-        
         if (!this.state.current()) this.storage.saveCmdToStorage(obj);
         this.newElementPrepare(obj);
         // парсинг и вверификация команды
         //console.log(this.parser.parse(obj.value));
-        if (!this.state.current()) await this.checkCommand(this.parser.parse(obj.value))
         
+        if ((!this.state.current()) && (obj.value != "")) await this.checkCommand(this.parser.parse(obj.value));
+
         this.checkStatement(obj.value);
     }
 
@@ -48,7 +48,7 @@ class EventController {
             this.view.error("there is an error in the syntax of the command, be more careful");
             return;
         }
-        let name, count
+        let name, count, cart
         switch (cmd.command) {
             case "add":
                 if (!(await this.controller.isLogin())) {
@@ -64,7 +64,7 @@ class EventController {
                     this.view.error("the lethal dose of pizzas for a person: 12,5. For the safety of our users lives, we cannot allow you to order more than 12 pizzas at a time");
                     return;
                 }
-                this.storage.updatePizzaInStorage({pizza: name, count})
+                this.storage.updatePizzaInStorage({pizza: name, count: count})
                 this.view.addPizza(name, count);
                 break;
             case "login":
@@ -79,7 +79,9 @@ class EventController {
                     this.view.error("before you log out of your account, you must first log in to it");
                     return;
                 }
-                await this.controller.logOut();
+                await this.controller.logout();
+                location.reload();
+                this.storage.clearStorage();
                 break;
             case "register":
                 if (await this.controller.isLogin()) {
@@ -103,19 +105,29 @@ class EventController {
                 [name] = cmd.args;
                 this.storage.removePizzaFromStorage({pizza: name});
                 break;
-            case "delete":
+            case "del":
                 if (!(await this.controller.isAdmin())) {
                     this.view.error("nice try, but you need to have administrator rights to execute this command");
                     return;
                 }
-                [name] = cmd.args;
-                await this.controller.deletePizza(name);
+                console.log(cmd);
+                let [param, id] = cmd.args;
+                if (param == '-p') await this.controller.deletePizza({pizzaId: id});
+                if (param == '-u') await this.controller.deleteUser({userId: id});
+                //
                 break;
             case "buy":
                 if (!(await this.controller.isLogin())) {
                     this.view.error("you are not logged in as a user");
                     return;
                 }
+                cart = this.storage.getCart();
+                //console.log(cart);
+                if (cart.length === 0) {
+                    this.view.error("your cart is empty now");
+                    return;
+                }
+                this.view.addCart(cart, await this.controller.getPizzaList());
                 this.state.startBuying();
                 break;
             case "cart":
@@ -123,14 +135,25 @@ class EventController {
                     this.view.error("you are not logged in as a user");
                     return;
                 }
-                this.view.addElement('/add/cart');
+                cart = this.storage.getCart();
+                if (!cart) {
+                    this.view.error("your cart is empty now");
+                    return;
+                }
+                this.view.addCart(cart, await this.controller.getPizzaList());
                 break;
             case "help":
                 this.view.addElement('/add/help');
                 break;
             case "ls":
-                await this.controller.getPizzaList();
                 this.view.addElement('/add/ls');
+                break;
+            case "uls":
+                if (!(await this.controller.isAdmin())) {
+                    this.view.error("nice try, but you need to have administrator rights to execute this command");
+                    return;
+                }
+                this.view.addElement('/add/uls');
                 break;
         }
     }
@@ -157,14 +180,14 @@ class EventController {
                 this.view.inputLine("password", false);
                 break
             case "loginEnd":
-                if (!((await this.controller.checkUsername(this.input.data.username)) && (await this.controller.checkPassword(value)))) {
+                this.input.data.password = value;
+                if (!((await this.controller.checkUsername(this.input.data.username)) && (await this.controller.login(this.input.data)))) {
                     this.view.error("invalid password. Use register to create new account or exit to cansel logination");
-                    this.view.inputLine("password");
+                    this.view.inputLine("password", false);
                     return
                 }
-                this.input.data.password = value;
                 this.state.next();
-                await this.controller.login(this.input.data);
+                this.view.printText("welcome, " + this.input.data.username);
                 this.input.clear();
                 this.view.addElement('/add/cmdline');
                 break;
@@ -172,13 +195,19 @@ class EventController {
                 this.view.inputLine("username");
                 this.state.next();
                 break;
-            case "registerPassword":
+            case "registerEmail":
+                console.log(value);
                 if (await this.controller.checkUsername(value)) {
                     this.view.error("this username is already occupied");
                     this.view.inputLine("username");
                     return
                 }
                 this.input.data.username = value;
+                this.view.inputLine("email");
+                this.state.next();
+                break;
+            case "registerPassword":
+                this.input.data.email = value;
                 this.state.next();
                 this.view.inputLine("password", false);
                 break;
@@ -211,7 +240,7 @@ class EventController {
                 this.view.addElement('/add/cmdline');
                 break;
             case "buyAdress":
-                this.view.inputLine("adress");
+                this.view.inputLine("address");
                 this.state.next();
                 break;
             case "buyPhone":
@@ -222,13 +251,13 @@ class EventController {
             case "buyEnd":
                 this.input.data.phone = value;
                 this.state.next();
-                await this.controller.addNewOrder(this.input.data);
+                let cart = this.storage.getCart();
+                await this.controller.addNewOrder(this.input.data, cart);
                 this.input.clear();
                 this.view.printText("your order has been queued. We'll call you back.");
                 this.view.addElement('/add/cmdline');
                 break;
         }
-        
     }
 
     async handleKeyPress(event) {

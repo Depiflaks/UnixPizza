@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Service\PizzaService;
 use App\Service\SecurityService;
+use App\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,11 +14,13 @@ class CommandController extends AbstractController
 {
     private PizzaService $pizzaService;
     private SecurityService $securityService;
+    private UserService $userService;
 
-    public function __construct(PizzaService $pizzaService, SecurityService $securityService)
+    public function __construct(PizzaService $pizzaService, SecurityService $securityService, UserService $userService)
     {
         $this->pizzaService = $pizzaService;
         $this->securityService = $securityService;
+        $this->userService = $userService;
     }
 
     public function index(): Response 
@@ -34,7 +37,9 @@ class CommandController extends AbstractController
 
     public function addLine(): Response 
     {
-        $contents = $this->render('contents/command_line.html.twig', ["data" => ["user_name" => "user"]]);
+        $user = $this->securityService->getUser();
+        $name = $user ? $user->getUserName() : "user";
+        $contents = $this->render('contents/command_line.html.twig', ["data" => ["user_name" => $name]]);
         return $contents;
     }
 
@@ -84,6 +89,14 @@ class CommandController extends AbstractController
     {
         $pizzas = $this->pizzaService->listAllPizzas();
         $contents = $this->render('pizza/pizza_list.html.twig', ["data" => $pizzas]);
+        return $contents;
+    }
+
+    public function userList(): Response 
+    {
+        if (!$this->securityService->isAdmin()) return $this->render('error/error.html.twig', ["text" => "access error"]);
+        $users = $this->userService->listAllUsers();
+        $contents = $this->render('user/user_list.html.twig', ["data" => $users]);
         return $contents;
     }
 }

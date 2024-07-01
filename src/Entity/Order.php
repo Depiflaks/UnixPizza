@@ -35,6 +35,11 @@ class Order
     private string $phone;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private string $order_content;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private \DateTimeInterface $date;
@@ -84,5 +89,15 @@ class Order
     public function setDate(\DateTimeInterface $date): void
     {
         $this->date = $date;
+    }
+
+    public function getOrderContent(): string
+    {
+        return $this->order_content;
+    }
+
+    public function setOrderContent(string $content): void
+    {
+        $this->order_content = $content;
     }
 }

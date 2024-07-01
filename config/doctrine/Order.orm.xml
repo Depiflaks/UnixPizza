@@ -12,6 +12,7 @@
         <field name="address" type="string" column="address" length="255"/>
         <field name="phone" type="string" column="phone" length="255"/>
         <field name="date" type="datetime" column="date"/>
+        <field name="order_content" type="string" column="order_content" length="255"/>
     </entity>
 
 </doctrine-mapping>

@@ -23,6 +23,11 @@ ls:
     controller: App\Controller\CommandController::pizzaList
     methods: POST
 
+uls:
+    path: /add/uls
+    controller: App\Controller\CommandController::userList
+    methods: POST
+
 cart:
     path: /add/cart
     controller: App\Controller\CommandController::userCart
@@ -58,14 +63,34 @@ pizza_new:
     controller: App\Controller\PizzaController::createPizza
     methods: POST
 
+pizza_delete:
+    path: /pizza/delete/{id}
+    controller: App\Controller\PizzaController::deletePizza
+    methods: POST
+
+user_check:
+    path: user/check_name
+    controller: App\Controller\UserController::checkUserName
+    methods: POST
+
 user_list:
     path: user/list
     controller: App\Controller\UserController::listUsers
     methods: POST
 
+user_delete:
+    path: user/delete/{id}
+    controller: App\Controller\UserController::deleteUser
+    methods: POST
+
 user_new:
     path: user/new
     controller: App\Controller\UserController::createUser
+    methods: POST
+
+get_id:
+    path: /security/get_id
+    controller: App\Controller\SecurityController::getId
     methods: POST
 
 is_login:
@@ -81,6 +106,16 @@ is_admin:
 login:
     path: /security/login
     controller: App\Controller\SecurityController::login
+    methods: POST
+
+logout:
+    path: /security/logout
+    controller: App\Controller\SecurityController::logout
+    methods: POST
+
+order_create:
+    path: /order/create
+    controller: App\Controller\OrderController::createOrder
     methods: POST
 
 # add_user:

@@ -23,15 +23,16 @@ class OrderController extends AbstractController
     /**
      * @Route("/order", methods={"POST"})
      */
-    public function createOrder(Request $request): JsonResponse
+    public function createOrder(): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        $data = json_decode(file_get_contents("php://input"), true);
 
         $order = $this->orderService->addOrder(
             (int)$data['user_id'],
             $data['address'],
             $data['phone'],
-            new \DateTime($data['date'])
+            new \DateTime(),
+            $data["content"]
         );
 
         return new JsonResponse(['status' => 'Order created', 'id' => $order->getOrderId()], Response::HTTP_CREATED);

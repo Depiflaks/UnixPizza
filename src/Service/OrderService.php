@@ -16,13 +16,14 @@ class OrderService
         $this->orderRepository = $orderRepository;
     }
 
-    public function addOrder(int $userId, string $address, string $phone, \DateTime $date): Order
+    public function addOrder(int $userId, string $address, string $phone, \DateTime $date, string $content): Order
     {
         $order = new Order();
         $order->setUserId($userId);
         $order->setAddress($address);
         $order->setPhone($phone);
         $order->setDate($date);
+        $order->setOrderContent($content);
 
         $this->orderRepository->store($order);
 

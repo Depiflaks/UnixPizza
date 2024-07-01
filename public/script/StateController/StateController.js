@@ -16,6 +16,10 @@ class StateController {
             },
             "registerName": {
                 name: "registerName",
+                next: "registerEmail",
+            },
+            "registerEmail": {
+                name: "registerEmail",
                 next: "registerPassword",
             },
             "registerPassword": {

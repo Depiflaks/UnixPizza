@@ -4,50 +4,77 @@ class ConnectionController {
     }
 
     async makeRequest(path, param) {
-        let response = fetch(path, {
+        let response = await fetch(path, {
             method: 'POST',
             headers: {},
             body: param,
         });
-        if (await response.ok) {
-            const result = (await response).json()
+        if (response.ok) {
+            const result = response.json();
             return result;
         } else {
-            console.log(response, "error")
+            console.log(path, "error")
         }
         return false;
     }
 
-    async login({username, password}) {
-        const data = {username, password};
-        const json_data = JSON.stringify(data);
-        await this.makeRequest("/security/login", json_data);
+    async logout() {
+        await this.makeRequest("/security/logout", []);
     }
 
-    async register({username, password}) {
-        const data = {"user_name": username, "password": password}
+    async login({username, password}) {
+        const data = {"user_name": username, "password": password};
         const json_data = JSON.stringify(data);
-        console.log(json_data);
+        const login = await this.makeRequest("/security/login", json_data)
+        return login["login"];
+    }
+
+    async register({username, password, email}) {
+        const data = {"user_name": username, "password": password, "email": email}
+        const json_data = JSON.stringify(data);
         await this.makeRequest("user/new", json_data);
         await this.makeRequest("/security/login", json_data);
     }
 
-    async addNewOrder({phone, adress}) {
-
+    async addNewOrder({phone, adress}, cart) {
+        const data = {
+            "user_id": this.makeRequest("security/get_id")["id"],
+            "address": adress,
+            "phone": phone,
+            "content": ""
+        }
+        for (let point in cart) {
+            data.content += point + ":" + cart[point]+";"
+        }
+        const json_data = JSON.stringify(data);
+        await this.makeRequest("order/create", json_data);
     }
     
     async addNewPizza({pizzaCost, pizzaIngridients, pizzaName}) {
+        const data = {
+            "pizza_name": pizzaName, 
+            "ingridients": pizzaIngridients,
+            "cost": pizzaCost,
+        }
+        const json_data = JSON.stringify(data);
 
+        return await this.makeRequest("pizza/new", json_data)
+    }
+
+    async deletePizza({pizzaId}) {
+        await this.makeRequest("pizza/delete/" + pizzaId, []);
+    }
+
+    async deleteUser({userId}) {
+        await this.makeRequest("user/delete/" + userId, []);
     }
 
     async getPizzaList() {
-        const data = await this.makeRequest("pizza/list", []);
-        return data;
+        return await this.makeRequest("pizza/list", []);
     }
 
     async getUserList() {
-        const data = await this.makeRequest("user/list", []);
-        return data;
+        return await this.makeRequest("user/list", []);
     }
 
     async isLogin() {
@@ -70,18 +97,12 @@ class ConnectionController {
     }
 
     async checkUsername(name) {
-        const list = await this.getUserList();
-        console.log(list);
-        let flag = false;
-        if (!list) return flag;
-        for (let user of list) {
-            flag |= (user.user_name == name)
+        const data = {
+            "user_name": name, 
         }
-        return flag;
-    }
-
-    async checkPassword(name, password) {
-        return true;
+        const json_data = JSON.stringify(data);
+        console.log((await this.makeRequest("user/check_name", json_data))["user"]);
+        return (await this.makeRequest("user/check_name", json_data))["user"]
     }
 }
 
