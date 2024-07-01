@@ -48,7 +48,40 @@ error:
     controller: App\Controller\CommandController::addError
     methods: POST
 
+pizza_list:
+    path: /pizza/list
+    controller: App\Controller\PizzaController::listPizzas
+    methods: POST
 
+pizza_new:
+    path: /pizza/new
+    controller: App\Controller\PizzaController::createPizza
+    methods: POST
+
+user_list:
+    path: user/list
+    controller: App\Controller\UserController::listUsers
+    methods: POST
+
+user_new:
+    path: user/new
+    controller: App\Controller\UserController::createUser
+    methods: POST
+
+is_login:
+    path: /security/is_login
+    controller: App\Controller\SecurityController::isLogin
+    methods: POST
+
+is_admin:
+    path: /security/is_admin
+    controller: App\Controller\SecurityController::isAdmin
+    methods: POST
+
+login:
+    path: /security/login
+    controller: App\Controller\SecurityController::login
+    methods: POST
 
 # add_user:
 #     path: /user/add_user

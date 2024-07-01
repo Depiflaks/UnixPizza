@@ -27,7 +27,7 @@ class EventController {
         last.removeAttribute("id");
     }
     
-    pressEnter() {
+    async pressEnter() {
         const obj = {
             last: this.document.getElementById("last"),
             input: this.document.getElementById("last").querySelector("input"),
@@ -37,13 +37,13 @@ class EventController {
         if (!this.state.current()) this.storage.saveCmdToStorage(obj);
         this.newElementPrepare(obj);
         // парсинг и вверификация команды
-        console.log(this.parser.parse(obj.value));
-        if (!this.state.current()) this.checkCommand(this.parser.parse(obj.value))
+        //console.log(this.parser.parse(obj.value));
+        if (!this.state.current()) await this.checkCommand(this.parser.parse(obj.value))
         
         this.checkStatement(obj.value);
     }
 
-    checkCommand(cmd) {
+    async checkCommand(cmd) {
         if (!cmd) {
             this.view.error("there is an error in the syntax of the command, be more careful");
             return;
@@ -51,12 +51,12 @@ class EventController {
         let name, count
         switch (cmd.command) {
             case "add":
-                if (!this.controller.isLogin()) {
+                if (!(await this.controller.isLogin())) {
                     this.view.error("You are not logged in as a user");
                     return;
                 }
                 [name, count] = cmd.args;
-                if (!this.controller.verifyPizzaName(name)) {
+                if (!(await this.controller.verifyPizzaName(name))) {
                     this.view.error("there is no pizza with this name in the catalog");
                     return;
                 }
@@ -68,35 +68,35 @@ class EventController {
                 this.view.addPizza(name, count);
                 break;
             case "login":
-                if (this.controller.isLogin()) {
+                if (await this.controller.isLogin()) {
                     this.view.error("you have already logged in as a user");
                     return;
                 }
                 this.state.startLogin();
                 break;
             case "logout":
-                if (!this.controller.isLogin()) {
+                if (!(await this.controller.isLogin())) {
                     this.view.error("before you log out of your account, you must first log in to it");
                     return;
                 }
-                this.controller.logOut();
+                await this.controller.logOut();
                 break;
             case "register":
-                if (this.controller.isLogin()) {
+                if (await this.controller.isLogin()) {
                     this.view.error("before creating a new account, you need to log out of the current one");
                     return;
                 }
                 this.state.startRegistration();
                 break;
             case "new":
-                if (!this.controller.isAdmin()) {
+                if (!(await this.controller.isAdmin())) {
                     this.view.error("nice try, but you need to have administrator rights to execute this command");
                     return;
                 }
                 this.state.startAdding();
                 break;
             case "rm":
-                if (!this.controller.isLogin()) {
+                if (!(await this.controller.isLogin())) {
                     this.view.error("you are not logged in as a user");
                     return;
                 }
@@ -104,22 +104,22 @@ class EventController {
                 this.storage.removePizzaFromStorage({pizza: name});
                 break;
             case "delete":
-                if (!this.controller.isAdmin()) {
+                if (!(await this.controller.isAdmin())) {
                     this.view.error("nice try, but you need to have administrator rights to execute this command");
                     return;
                 }
                 [name] = cmd.args;
-                this.controller.deletePizza(name);
+                await this.controller.deletePizza(name);
                 break;
             case "buy":
-                if (!this.controller.isLogin()) {
+                if (!(await this.controller.isLogin())) {
                     this.view.error("you are not logged in as a user");
                     return;
                 }
                 this.state.startBuying();
                 break;
             case "cart":
-                if (!this.controller.isLogin()) {
+                if (!(await this.controller.isLogin())) {
                     this.view.error("you are not logged in as a user");
                     return;
                 }
@@ -129,12 +129,13 @@ class EventController {
                 this.view.addElement('/add/help');
                 break;
             case "ls":
+                await this.controller.getPizzaList();
                 this.view.addElement('/add/ls');
                 break;
         }
     }
 
-    checkStatement(value) {
+    async checkStatement(value) {
         if (value == "exit") this.state.clean();
         switch (this.state.current()) {
             case null:
@@ -146,7 +147,7 @@ class EventController {
                 this.state.next();
                 break;
             case "loginPassword":
-                if (!this.controller.checkUsername(value)) {
+                if (!(await this.controller.checkUsername(value))) {
                     this.view.error("there is no user with that username. Use register to create new account or exit to cansel logination");
                     this.view.inputLine("username");
                     return
@@ -156,23 +157,23 @@ class EventController {
                 this.view.inputLine("password", false);
                 break
             case "loginEnd":
-                if (!(this.controller.checkUsername(this.input.data.username) && this.controller.checkPassword(value))) {
+                if (!((await this.controller.checkUsername(this.input.data.username)) && (await this.controller.checkPassword(value)))) {
                     this.view.error("invalid password. Use register to create new account or exit to cansel logination");
                     this.view.inputLine("password");
                     return
                 }
                 this.input.data.password = value;
                 this.state.next();
-                this.controller.login(this.input.data);
+                await this.controller.login(this.input.data);
                 this.input.clear();
                 this.view.addElement('/add/cmdline');
-                break
+                break;
             case "registerName":
                 this.view.inputLine("username");
                 this.state.next();
                 break;
             case "registerPassword":
-                if (this.controller.checkUsername(value)) {
+                if (await this.controller.checkUsername(value)) {
                     this.view.error("this username is already occupied");
                     this.view.inputLine("username");
                     return
@@ -180,23 +181,23 @@ class EventController {
                 this.input.data.username = value;
                 this.state.next();
                 this.view.inputLine("password", false);
-                break
+                break;
             case "registerEnd":
                 this.input.data.password = value;
                 this.state.next();
-                this.controller.register(this.input.data);
+                await this.controller.register(this.input.data);
                 this.input.clear();
                 this.view.addElement('/add/cmdline');
-                break
+                break;
             case "pizzaName":
                 this.view.inputLine("name");
                 this.state.next();
-                break
+                break;
             case "pizzaIngridients":
                 this.input.data.pizzaName = value;
                 this.view.inputLine("ingridients");
                 this.state.next();
-                break
+                break;
             case "pizzaCost":
                 this.input.data.pizzaIngridients = value;
                 this.view.inputLine("cost");
@@ -205,45 +206,42 @@ class EventController {
             case "pizzaEnd":
                 this.input.data.pizzaCost = value;
                 this.state.next();
-                this.controller.addNewPizza(this.input.data);
+                await this.controller.addNewPizza(this.input.data);
                 this.input.clear();
                 this.view.addElement('/add/cmdline');
-                break
+                break;
             case "buyAdress":
                 this.view.inputLine("adress");
                 this.state.next();
-                break
+                break;
             case "buyPhone":
                 this.input.data.adress = value;
                 this.view.inputLine("phone");
                 this.state.next();
-                break
+                break;
             case "buyEnd":
                 this.input.data.phone = value;
                 this.state.next();
-                this.controller.addNewOrder(this.input.data);
+                await this.controller.addNewOrder(this.input.data);
                 this.input.clear();
                 this.view.printText("your order has been queued. We'll call you back.");
                 this.view.addElement('/add/cmdline');
-                break
+                break;
         }
         
     }
 
-    handleKeyPress(event) {
+    async handleKeyPress(event) {
         const key = event.key;
         switch (key) {
             case "Enter":
-                this.pressEnter();
+                await this.pressEnter();
                 break;
             case "ArrowUp":
                 this.pressUp()
                 break;
             case "ArrowDown":
                 this.pressDown()
-                break;
-            case "Alt":
-                // Решить, дописывать, или нет
                 break;
         }
     }

@@ -39,5 +39,6 @@ class PizzaRepository
     public function listAll(): array
     {
         return $this->repository->findAll();
+        
     }
 }

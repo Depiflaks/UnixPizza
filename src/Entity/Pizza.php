@@ -26,7 +26,7 @@ class Pizza
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private string $ingredient;
+    private string $ingridients;
 
     /**
      * @ORM\Column(type="integer")
@@ -50,14 +50,14 @@ class Pizza
         $this->pizza_name = $pizza_name;
     }
 
-    public function getIngredient(): string
+    public function getIngridients(): string
     {
-        return $this->ingredient;
+        return $this->ingridients;
     }
 
-    public function setIngredient(string $ingredient): void
+    public function setIngridients(string $ingridients): void
     {
-        $this->ingredient = $ingredient;
+        $this->ingridients = $ingridients;
     }
 
     public function getCost(): int
@@ -68,5 +68,15 @@ class Pizza
     public function setCost(int $cost): void
     {
         $this->cost = $cost;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'pizza_id' => $this->getPizzaId(),
+            'pizza_name' => $this->getPizzaName(),
+            'ingridients' => $this->getIngridients(),
+            'cost' => $this->getCost()
+        ];
     }
 }

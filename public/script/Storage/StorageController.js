@@ -1,4 +1,8 @@
 class StorageController {
+    constructor() {
+        localStorage.setItem('cart', JSON.stringify([]));
+    }
+
     saveCmdToStorage({value}) {
         let data = localStorage.getItem("cmdArr") ? JSON.parse(localStorage.getItem("cmdArr")) : [];
         data.push(value);
@@ -14,14 +18,12 @@ class StorageController {
         } else {
             cart[pizza] = parseInt(count);
         }
-        console.log(cart);
         localStorage.setItem('cart', JSON.stringify(cart));
     }
 
     removePizzaFromStorage({pizza}) {
         let cart = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : {};
         delete cart[pizza];
-        console.log(cart);
         localStorage.setItem('cart', JSON.stringify(cart));
     }
 }

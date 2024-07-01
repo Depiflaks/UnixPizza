@@ -11,6 +11,7 @@
         <field name="user_name" type="string" column="user_name" length="255"/>
         <field name="email" type="string" column="email" length="255"/>
         <field name="password" type="string" column="password" length="255"/>
+        <field name="is_admin" type="boolean" column="is_admin" />
     </entity>
 
 </doctrine-mapping>

@@ -3,12 +3,23 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\PizzaService;
+use App\Service\SecurityService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class CommandController extends AbstractController
 {
+    private PizzaService $pizzaService;
+    private SecurityService $securityService;
+
+    public function __construct(PizzaService $pizzaService, SecurityService $securityService)
+    {
+        $this->pizzaService = $pizzaService;
+        $this->securityService = $securityService;
+    }
+
     public function index(): Response 
     {
         $contents = $this->render('panel/panel.html.twig');
@@ -29,7 +40,7 @@ class CommandController extends AbstractController
 
     public function addHelp(): Response 
     {
-        $contents = $this->render('contents/help.html.twig', ["isAdmin" => true]);
+        $contents = $this->render('contents/help.html.twig', ["isAdmin" => $this->securityService->isAdmin()]);
         return $contents;
     }
 
@@ -71,27 +82,8 @@ class CommandController extends AbstractController
 
     public function pizzaList(): Response 
     {
-        $pizza = [
-            [
-                "id" => "0",
-                "name" => "Margherita",
-                "ingridients" => "Tomato, Mozzarella, Basil",
-                "cost" => 8,
-            ],
-            [
-                "id" => "1",
-                "name" => "Pepperoni",
-                "ingridients" => "Pepperoni, Mozzarella, Tomato Sauce",
-                "cost" => 9,
-            ],
-            [
-                "id" => "2",
-                "name" => "BBQ Chicken",
-                "ingridients" => "Chicken, BBQ Sauce, Red Onions, Cilantro",
-                "cost" => 11,
-            ],
-        ];
-        $contents = $this->render('pizza/pizza_list.html.twig', ["data" => $pizza]);
+        $pizzas = $this->pizzaService->listAllPizzas();
+        $contents = $this->render('pizza/pizza_list.html.twig', ["data" => $pizzas]);
         return $contents;
     }
 }

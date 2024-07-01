@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Order;
-use App\Repository\OrderRepository;
+use App\Service\OrderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,11 +13,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class OrderController extends AbstractController
 {
-    private OrderRepository $orderRepository;
+    private OrderService $orderService;
 
-    public function __construct(OrderRepository $orderRepository)
+    public function __construct(OrderService $orderService)
     {
-        $this->orderRepository = $orderRepository;
+        $this->orderService = $orderService;
     }
 
     /**
@@ -28,15 +27,14 @@ class OrderController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        $order = new Order();
-        $order->setUserId((int)$data['user_id']);
-        $order->setAddress($data['address']);
-        $order->setPhone($data['phone']);
-        $order->setDate(new \DateTime($data['date']));
+        $order = $this->orderService->addOrder(
+            (int)$data['user_id'],
+            $data['address'],
+            $data['phone'],
+            new \DateTime($data['date'])
+        );
 
-        $id = $this->orderRepository->store($order);
-
-        return new JsonResponse(['status' => 'Order created', 'id' => $id], Response::HTTP_CREATED);
+        return new JsonResponse(['status' => 'Order created', 'id' => $order->getOrderId()], Response::HTTP_CREATED);
     }
 
     /**
@@ -44,9 +42,23 @@ class OrderController extends AbstractController
      */
     public function listOrders(): JsonResponse
     {
-        $orders = $this->orderRepository->listAll();
+        $orders = $this->orderService->listAllOrders();
 
         return new JsonResponse($orders, Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/order/{id}", methods={"GET"})
+     */
+    public function getOrder(int $id): JsonResponse
+    {
+        $order = $this->orderService->getOrder($id);
+
+        if (!$order) {
+            return new JsonResponse(['status' => 'Order not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        return new JsonResponse($order, Response::HTTP_OK);
     }
 
     /**
@@ -54,13 +66,7 @@ class OrderController extends AbstractController
      */
     public function deleteOrder(int $id): JsonResponse
     {
-        $order = $this->orderRepository->findByColumn('order_id', (string)$id);
-
-        if (!$order) {
-            return new JsonResponse(['status' => 'Order not found'], Response::HTTP_NOT_FOUND);
-        }
-
-        $this->orderRepository->delete($order);
+        $this->orderService->deleteOrder($id);
 
         return new JsonResponse(['status' => 'Order deleted'], Response::HTTP_NO_CONTENT);
     }

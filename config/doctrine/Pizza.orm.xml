@@ -9,7 +9,7 @@
             <generator strategy="AUTO"/>
         </id>
         <field name="pizza_name" type="string" column="pizza_name" length="255"/>
-        <field name="ingredient" type="string" column="ingredient" length="255"/>
+        <field name="ingridients" type="string" column="ingridients" length="255"/>
         <field name="cost" type="integer" column="cost"/>
     </entity>
 

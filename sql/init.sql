@@ -16,7 +16,7 @@ CREATE TABLE pizzas
 (
    `pizza_id`      INT NOT NULL AUTO_INCREMENT,
    `pizza_name`        VARCHAR(255) NOT NULL,
-   `ingredient`     VARCHAR(255) NOT NULL,
+   `ingridients`     VARCHAR(255) NOT NULL,
    `cost`       INT NOT NULL,
    PRIMARY KEY (`pizza_id`)
 ) ENGINE = InnoDB

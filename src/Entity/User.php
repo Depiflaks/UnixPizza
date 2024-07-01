@@ -32,6 +32,11 @@ class User
      */
     private string $password;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private bool $is_admin = false;
+
     // Getters and setters
 
     public function getUserId(): ?int
@@ -47,6 +52,16 @@ class User
     public function setUserName(string $user_name): void
     {
         $this->user_name = $user_name;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->is_admin;
+    }
+
+    public function setAdmin(bool $is_admin): void
+    {
+        $this->is_admin = $is_admin;
     }
 
     public function getEmail(): string
@@ -67,5 +82,15 @@ class User
     public function setPassword(string $password): void
     {
         $this->password = $password;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'user_id' => $this->getUserId(),
+            'user_name' => $this->getUserName(),
+            'email' => $this->getEmail(),
+            'password' => $this->getPassword()
+        ];
     }
 }
