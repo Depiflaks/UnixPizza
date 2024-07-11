@@ -28,6 +28,11 @@ uls:
     controller: App\Controller\CommandController::userList
     methods: POST
 
+ols:
+    path: /add/ols
+    controller: App\Controller\CommandController::orderList
+    methods: POST
+
 cart:
     path: /add/cart
     controller: App\Controller\CommandController::userCart
@@ -116,6 +121,11 @@ logout:
 order_create:
     path: /order/create
     controller: App\Controller\OrderController::createOrder
+    methods: POST
+
+order_delete:
+    path: order/delete/{id}
+    controller: App\Controller\OrderController::deleteOrder
     methods: POST
 
 # add_user:

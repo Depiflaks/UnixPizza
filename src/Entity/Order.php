@@ -100,4 +100,16 @@ class Order
     {
         $this->order_content = $content;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'order_id' => $this->getOrderId(),
+            'user_id' => $this->getUserId(),
+            'address' => $this->getAddress(),
+            'phone' => $this->getPhone(),
+            'date' => $this->getDate()->format('Y-m-d H:i:s'),
+            'order_content' => $this->getOrderContent(),
+        ];
+    }
 }

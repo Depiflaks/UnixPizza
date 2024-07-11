@@ -33,13 +33,10 @@ class EventController {
             input: this.document.getElementById("last").querySelector("input"),
             value: this.document.getElementById("last").querySelector("input").value,
         }
-        if (!this.state.current()) this.storage.saveCmdToStorage(obj);
         this.newElementPrepare(obj);
-        // парсинг и вверификация команды
-        //console.log(this.parser.parse(obj.value));
-        
-        if ((!this.state.current()) && (obj.value != "")) await this.checkCommand(this.parser.parse(obj.value));
-
+        if (!this.state.current()) this.storage.saveCmdToStorage(obj);
+            // парсинг и вверификация команды
+        if (!this.state.current()) await this.checkCommand(this.parser.parse(obj.value));
         this.checkStatement(obj.value);
     }
 
@@ -110,10 +107,10 @@ class EventController {
                     this.view.error("nice try, but you need to have administrator rights to execute this command");
                     return;
                 }
-                console.log(cmd);
                 let [param, id] = cmd.args;
                 if (param == '-p') await this.controller.deletePizza({pizzaId: id});
                 if (param == '-u') await this.controller.deleteUser({userId: id});
+                if (param == '-o') await this.controller.deleteOrder({orderId: id});
                 //
                 break;
             case "buy":
@@ -122,7 +119,6 @@ class EventController {
                     return;
                 }
                 cart = this.storage.getCart();
-                //console.log(cart);
                 if (cart.length === 0) {
                     this.view.error("your cart is empty now");
                     return;
@@ -154,6 +150,13 @@ class EventController {
                     return;
                 }
                 this.view.addElement('/add/uls');
+                break;
+            case "ols":
+                if (!(await this.controller.isAdmin())) {
+                    this.view.error("nice try, but you need to have administrator rights to execute this command");
+                    return;
+                }
+                this.view.addElement('/add/ols');
                 break;
         }
     }
@@ -196,9 +199,13 @@ class EventController {
                 this.state.next();
                 break;
             case "registerEmail":
-                console.log(value);
                 if (await this.controller.checkUsername(value)) {
                     this.view.error("this username is already occupied");
+                    this.view.inputLine("username");
+                    return
+                }
+                if (value == "") {
+                    this.view.error("this field cannot be empty");
                     this.view.inputLine("username");
                     return
                 }
@@ -207,11 +214,21 @@ class EventController {
                 this.state.next();
                 break;
             case "registerPassword":
+                if (value == "") {
+                    this.view.error("this field cannot be empty");
+                    this.view.inputLine("email");
+                    return
+                }
                 this.input.data.email = value;
                 this.state.next();
                 this.view.inputLine("password", false);
                 break;
             case "registerEnd":
+                if (value == "") {
+                    this.view.error("this field cannot be empty");
+                    this.view.inputLine("email");
+                    return
+                }
                 this.input.data.password = value;
                 this.state.next();
                 await this.controller.register(this.input.data);

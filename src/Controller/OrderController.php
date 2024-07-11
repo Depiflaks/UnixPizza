@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\OrderService;
+use App\Service\SecurityService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,15 +15,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class OrderController extends AbstractController
 {
     private OrderService $orderService;
+    private SecurityService $securityService;
 
-    public function __construct(OrderService $orderService)
+    public function __construct(OrderService $orderService, SecurityService $securityService)
     {
         $this->orderService = $orderService;
+        $this->securityService = $securityService;
     }
 
-    /**
-     * @Route("/order", methods={"POST"})
-     */
     public function createOrder(): JsonResponse
     {
         $data = json_decode(file_get_contents("php://input"), true);
@@ -38,37 +38,11 @@ class OrderController extends AbstractController
         return new JsonResponse(['status' => 'Order created', 'id' => $order->getOrderId()], Response::HTTP_CREATED);
     }
 
-    /**
-     * @Route("/orders", methods={"GET"})
-     */
-    public function listOrders(): JsonResponse
+    public function deleteOrder(int $id): Response
     {
-        $orders = $this->orderService->listAllOrders();
-
-        return new JsonResponse($orders, Response::HTTP_OK);
-    }
-
-    /**
-     * @Route("/order/{id}", methods={"GET"})
-     */
-    public function getOrder(int $id): JsonResponse
-    {
-        $order = $this->orderService->getOrder($id);
-
-        if (!$order) {
-            return new JsonResponse(['status' => 'Order not found'], Response::HTTP_NOT_FOUND);
-        }
-
-        return new JsonResponse($order, Response::HTTP_OK);
-    }
-
-    /**
-     * @Route("/order/{id}", methods={"DELETE"})
-     */
-    public function deleteOrder(int $id): JsonResponse
-    {
+        if (!$this->securityService->isAdmin()) return $this->json(['status' => 'not enough rights'], Response::HTTP_OK);
         $this->orderService->deleteOrder($id);
 
-        return new JsonResponse(['status' => 'Order deleted'], Response::HTTP_NO_CONTENT);
+        return $this->json(['status' => 'Order deleted'], Response::HTTP_OK);
     }
 }

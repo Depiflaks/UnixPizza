@@ -80,10 +80,6 @@ class ConnectionView {
     
         this.addElement("/add/error", json_data);
     }
-
-    logOut() {
-        console.log("alright!");
-    }
 }
 
 export {ConnectionView}

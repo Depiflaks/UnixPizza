@@ -33,12 +33,13 @@ class ConnectionController {
         const data = {"user_name": username, "password": password, "email": email}
         const json_data = JSON.stringify(data);
         await this.makeRequest("user/new", json_data);
-        await this.makeRequest("/security/login", json_data);
+        await this.makeRequest("security/login", json_data);
     }
 
     async addNewOrder({phone, adress}, cart) {
+        const id = (await this.makeRequest("security/get_id")).id;
         const data = {
-            "user_id": this.makeRequest("security/get_id")["id"],
+            "user_id": id,
             "address": adress,
             "phone": phone,
             "content": ""
@@ -67,6 +68,10 @@ class ConnectionController {
 
     async deleteUser({userId}) {
         await this.makeRequest("user/delete/" + userId, []);
+    }
+
+    async deleteOrder({orderId}) {
+        await this.makeRequest("order/delete/" + orderId, []);
     }
 
     async getPizzaList() {
@@ -101,7 +106,6 @@ class ConnectionController {
             "user_name": name, 
         }
         const json_data = JSON.stringify(data);
-        console.log((await this.makeRequest("user/check_name", json_data))["user"]);
         return (await this.makeRequest("user/check_name", json_data))["user"]
     }
 }

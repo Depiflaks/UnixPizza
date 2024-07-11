@@ -1,0 +1,17 @@
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>user</th>
+            <th>address</th>
+            <th>phone</th>
+            <th>date</th>
+            <th>content</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in data %}
+            {% include 'contents/order_list_line.html.twig' with row %}
+        {% endfor %}
+    </tbody>
+</table>

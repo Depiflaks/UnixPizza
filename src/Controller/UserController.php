@@ -7,10 +7,7 @@ namespace App\Controller;
 use App\Service\SecurityService;
 use App\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
@@ -25,7 +22,6 @@ class UserController extends AbstractController
 
     public function createUser(): Response
     {
-        if (!$this->securityService->isAdmin()) return $this->json(['status' => 'not enough rights'], Response::HTTP_NO_CONTENT);
         $data = json_decode(file_get_contents("php://input"), true);
         $user = $this->userService->addUser(
             $data['user_name'],
@@ -37,7 +33,7 @@ class UserController extends AbstractController
 
     public function listUsers(): Response
     {
-        if (!$this->securityService->isAdmin()) return $this->json(['status' => 'not enough rights'], Response::HTTP_NO_CONTENT);
+        if (!$this->securityService->isAdmin()) return $this->json(['status' => 'not enough rights'], Response::HTTP_OK);
         $users = $this->userService->listAllUsers();
         
         return $this->json($users, Response::HTTP_OK);
@@ -50,7 +46,7 @@ class UserController extends AbstractController
         $name = $data["user_name"];
         $user = $this->userService->getUser($name);
         
-        return $this->json(["user" => $user ? $user->toArray() : false], Response::HTTP_OK);
+        return $this->json(["user" => $user ? true : false], Response::HTTP_OK);
     }
 
     public function deleteUser(int $id): Response

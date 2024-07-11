@@ -14,10 +14,8 @@ class StorageController {
     updatePizzaInStorage({pizza, count}) {
         let cart = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : {};
         if (cart[pizza]) {
-            console.log(1)
             cart[pizza] += parseInt(count);
         } else {
-            console.log(2)
             cart[pizza] = parseInt(count);
         }
         localStorage.setItem('cart', JSON.stringify(cart));

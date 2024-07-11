@@ -45,6 +45,11 @@ class OrderService
 
     public function listAllOrders(): array
     {
-        return $this->orderRepository->listAll();
-    }
+        $orders = $this->orderRepository->listAll();
+        $func = function(Order $order): array {
+            return $order->toArray();
+        };
+        $data = array_map($func, $orders);
+        return $data;
+    } 
 }

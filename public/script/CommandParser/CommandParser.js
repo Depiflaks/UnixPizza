@@ -12,10 +12,11 @@ class CommandParser {
             "buy": /^buy$/,
             "help": /^help$/,
             "new": /^new$/,
-            "del": /^del\s+(-[up])\s+(\d+)$/,
+            "del": /^del\s+(-[upo])\s+(\d+)$/,
             "uls": /^uls$/,
+            "ols": /^ols$/,
         };
-        this.adminCmd = ["new", "del"];
+        this.adminCmd = ["new", "del", "uls", "ols"];
         this.infoCmd = ["cart", "ls", "help", "logout"];
     }
 
